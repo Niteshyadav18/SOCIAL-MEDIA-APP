@@ -5,6 +5,7 @@ import userAtom from "../atoms/userAtom";
 import postsAtom from "../atoms/postsAtom";
 import useShowToast from "../hooks/useShowToast";
 
+//NEED IMPROVEMENT
 const Comment = ({reply, lastReply, postOwnerId, postId}) => {
     const currentUser = useRecoilValue(userAtom);
     const [posts, setPosts] = useRecoilState(postsAtom);
