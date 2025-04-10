@@ -15,13 +15,13 @@ const postSchema = mongoose.Schema(
             type: String,
         },
         likes: {
-            // array of user ids
             type: [mongoose.Schema.Types.ObjectId],
             ref: "User",
             default: [],
         },
         replies: [
             {
+                _id: {type: mongoose.Schema.Types.ObjectId, ref: "User", required: true}, // <-- Add this line
                 userId: {
                     type: mongoose.Schema.Types.ObjectId,
                     ref: "User",
@@ -31,12 +31,8 @@ const postSchema = mongoose.Schema(
                     type: String,
                     required: true,
                 },
-                userProfilePic: {
-                    type: String,
-                },
-                username: {
-                    type: String,
-                },
+                userProfilePic: String,
+                username: String,
             },
         ],
     },

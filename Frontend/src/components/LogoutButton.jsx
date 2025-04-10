@@ -7,6 +7,7 @@ import {FiLogOut} from "react-icons/fi";
 const LogoutButton = () => {
     const setUser = useSetRecoilState(userAtom);
     const showToast = useShowToast();
+    const navigate = useNavigate(); // 🔁 ADD THIS
 
     const handleLogout = async () => {
         try {
@@ -25,6 +26,7 @@ const LogoutButton = () => {
 
             localStorage.removeItem("user-threads");
             setUser(null);
+            navigate("/login"); // ✅ REDIRECT AFTER LOGOUT
         } catch (error) {
             showToast("Error", error, "error");
         }

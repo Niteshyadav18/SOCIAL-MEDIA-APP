@@ -2,15 +2,15 @@ import {Container} from "@chakra-ui/react";
 import {Route, Routes} from "react-router-dom";
 import UserPage from "./Pages/UserPage";
 import PostPage from "./Pages/PostPage";
-import Header from "./component/Header";
+import Header from "./components/Header";
 import HomePage from "./Pages/HomePage";
 import AuthPage from "./Pages/AuthPage";
 import {useRecoilValue} from "recoil";
 import userAtom from "./atoms/userAtom";
 import {Navigate} from "react-router";
 import UpdateProfilePage from "./Pages/UpdateProfilePage";
-import LogoutButton from "./component/LogoutButton";
-import CreatePost from "./component/CreatePost";
+
+import CreatePost from "./components/CreatePost";
 
 function App() {
     const user = useRecoilValue(userAtom);
@@ -27,7 +27,7 @@ function App() {
                 <Route path="/:username/post/:pid" element={<PostPage />} />
             </Routes>
 
-            {user && <LogoutButton />}
+            {/* {user && <LogoutButton />} */}
             {user && <CreatePost />}
         </Container>
     );

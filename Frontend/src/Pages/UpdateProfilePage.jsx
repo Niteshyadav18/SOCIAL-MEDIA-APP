@@ -53,7 +53,7 @@ export default function UpdateProfilePage() {
                 showToast("Error", data.error || "Failed to update profile", "error");
             }
         } catch (error) {
-            showToast("Error", "Something went wrong", "error");
+            showToast("Error", "Something went wrong", error);
         } finally {
             setUpdating(false);
         }

@@ -1,31 +1,32 @@
-import {Link, useNavigate} from "react-router-dom";
-import {Flex} from "@chakra-ui/react";
 import {Avatar} from "@chakra-ui/react";
-import {Box} from "@chakra-ui/react";
-import {Text} from "@chakra-ui/react";
 import {Image} from "@chakra-ui/react";
+import {Box, Flex, Text} from "@chakra-ui/react";
+import {Link, useNavigate} from "react-router-dom";
 import Actions from "./Actions";
 import {useEffect, useState} from "react";
 import useShowToast from "../hooks/useShowToast";
 import {formatDistanceToNow} from "date-fns";
-import userAtom from "../atoms/userAtom";
-import {useRecoilValue} from "recoil";
 import {DeleteIcon} from "@chakra-ui/icons";
+import {useRecoilState, useRecoilValue} from "recoil";
+import userAtom from "../atoms/userAtom";
+import postsAtom from "../atoms/postsAtom";
+import Comment from "./Comment";
 
 const Post = ({post, postedBy}) => {
     const [user, setUser] = useState(null);
     const showToast = useShowToast();
-    const navigate = useNavigate();
     const currentUser = useRecoilValue(userAtom);
+    const [posts, setPosts] = useRecoilState(postsAtom);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const getUser = async () => {
             try {
                 const res = await fetch("/api/users/profile/" + postedBy);
                 const data = await res.json();
-                //  console.log(data);
                 if (data.error) {
                     showToast("Error", data.error, "error");
+                    return;
                 }
                 setUser(data);
             } catch (error) {
@@ -33,6 +34,7 @@ const Post = ({post, postedBy}) => {
                 setUser(null);
             }
         };
+
         getUser();
     }, [postedBy, showToast]);
 
@@ -50,21 +52,20 @@ const Post = ({post, postedBy}) => {
                 return;
             }
             showToast("Success", "Post deleted", "success");
-            // setPosts(posts.filter((p) => p._id !== post._id));
+            setPosts(posts.filter((p) => p._id !== post._id));
         } catch (error) {
             showToast("Error", error.message, "error");
         }
     };
 
     if (!user) return null;
-
     return (
         <Link to={`/${user.username}/post/${post._id}`}>
             <Flex gap={3} mb={4} py={5}>
                 <Flex flexDirection={"column"} alignItems={"center"}>
                     <Avatar
                         size="md"
-                        name={user?.name}
+                        name={user.name}
                         src={user?.profilePic}
                         onClick={(e) => {
                             e.preventDefault();
@@ -73,7 +74,7 @@ const Post = ({post, postedBy}) => {
                     />
                     <Box w="1px" h={"full"} bg="gray.light" my={2}></Box>
                     <Box position={"relative"} w={"full"}>
-                        {post.replies.length === 0 && <Text textAlign={"center"}>🥱 </Text>}
+                        {post.replies.length === 0 && <Text textAlign={"center"}>🥱</Text>}
                         {post.replies[0] && (
                             <Avatar
                                 size="xs"
@@ -85,6 +86,7 @@ const Post = ({post, postedBy}) => {
                                 padding={"2px"}
                             />
                         )}
+
                         {post.replies[1] && (
                             <Avatar
                                 size="xs"
@@ -129,6 +131,7 @@ const Post = ({post, postedBy}) => {
                             <Text fontSize={"xs"} width={36} textAlign={"right"} color={"gray.light"}>
                                 {formatDistanceToNow(new Date(post.createdAt))} ago
                             </Text>
+
                             {currentUser?._id === user._id && <DeleteIcon size={20} onClick={handleDeletePost} />}
                         </Flex>
                     </Flex>
@@ -144,6 +147,15 @@ const Post = ({post, postedBy}) => {
                         <Actions post={post} />
                     </Flex>
                 </Flex>
+                {post.replies.map((reply, i) => (
+                    <Comment
+                        key={reply._id}
+                        reply={reply}
+                        lastReply={i === post.replies.length - 1}
+                        postOwnerId={post.postedBy}
+                        postId={post._id} // ✅ IMPORTANT!
+                    />
+                ))}
             </Flex>
         </Link>
     );

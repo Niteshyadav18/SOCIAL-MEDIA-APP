@@ -1,68 +1,31 @@
-import {Box, Flex, VStack, Text, Avatar, Link, MenuButton, Portal, useToast, Button} from "@chakra-ui/react";
-import {useRecoilValue} from "recoil";
+import {Avatar} from "@chakra-ui/react";
+import {Box, Flex, Link, Text, VStack} from "@chakra-ui/react";
+import {Menu, MenuButton, MenuItem, MenuList} from "@chakra-ui/react";
+import {Portal} from "@chakra-ui/react";
+import {Button, useToast} from "@chakra-ui/react";
 import {BsInstagram} from "react-icons/bs";
 import {CgMoreO} from "react-icons/cg";
-import {Menu, MenuList, MenuItem} from "@chakra-ui/react";
+import {useRecoilValue} from "recoil";
 import userAtom from "../atoms/userAtom";
 import {Link as RouterLink} from "react-router-dom";
-import {useState} from "react";
-import useShowToast from "../hooks/useShowToast";
+import useFollowUnfollow from "../hooks/useFollowUnfollow";
 
 const UserHeader = ({user}) => {
     const toast = useToast();
-    const currentUser = useRecoilValue(userAtom); //logged in user
-    const [following, setFollowing] = useState(user.followers.includes(currentUser?._id));
-    const showToast = useShowToast();
-    const [updating, setUpdating] = useState(false);
+    const currentUser = useRecoilValue(userAtom); // logged in user
+    const {handleFollowUnfollow, following, updating} = useFollowUnfollow(user);
 
     const copyURL = () => {
         const currentURL = window.location.href;
         navigator.clipboard.writeText(currentURL).then(() => {
             toast({
-                title: `Account created`,
+                title: "Success.",
                 status: "success",
-                description: "Link Copied",
+                description: "Profile link copied.",
                 duration: 3000,
                 isClosable: true,
             });
         });
-    };
-
-    const handleFollowUnfollow = async () => {
-        if (!currentUser) {
-            showToast("Error", "Please login to follow", "error");
-            return;
-        }
-        if (updating) return;
-        setUpdating(true);
-
-        try {
-            const res = await fetch(`/api/users/follow/${user._id}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
-            const data = await res.json();
-            if (data.error) {
-                showToast("Error", data.error, "error");
-                return;
-            }
-            if (following) {
-                showToast("Success", `Unfolloweded ${user.name}`, "success");
-                user.followers.pop(); //simulate unfollow
-            } else {
-                showToast("Success", `Followed ${user.name}`, "success");
-                user.followers.push(currentUser?._id); //simulate follow
-            }
-
-            setFollowing(!following);
-            console.log(data);
-        } catch (error) {
-            showToast("Error", "Something went wrong", error);
-        } finally {
-            setUpdating(false);
-        }
     };
 
     return (
@@ -75,7 +38,7 @@ const UserHeader = ({user}) => {
                     <Flex gap={2} alignItems={"center"}>
                         <Text fontSize={"sm"}>{user.username}</Text>
                         <Text fontSize={"xs"} bg={"gray.dark"} color={"gray.light"} p={1} borderRadius={"full"}>
-                            threads.net
+                            Nitz.net
                         </Text>
                     </Flex>
                 </Box>
@@ -119,7 +82,7 @@ const UserHeader = ({user}) => {
                 <Flex gap={2} alignItems={"center"}>
                     <Text color={"gray.light"}>{user.followers.length} followers</Text>
                     <Box w="1" h="1" bg={"gray.light"} borderRadius={"full"}></Box>
-                    <Link color={"gray.light"}>instagram.com</Link>
+                    <Link color={"gray.light"}>nitz.com</Link>
                 </Flex>
                 <Flex>
                     <Box className="icon-container">
