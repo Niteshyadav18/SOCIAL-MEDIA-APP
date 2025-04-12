@@ -1,5 +1,6 @@
 import Post from "../models/Post.model.js";
 import User from "../models/User.model.js";
+
 import {v2 as cloudinary} from "cloudinary";
 
 const createPost = async (req, res) => {
@@ -102,31 +103,47 @@ const likedUnlikedPost = async (req, res) => {
 
 const replyToPost = async (req, res) => {
     try {
+        // Extracting the required data
         const {text} = req.body;
         const postId = req.params.id;
-        const userId = req.user._id;
-        const userProfilePic = req.user.profilePic;
-        const username = req.user.username;
+        const {_id: userId, profilePic, username} = req.user; // Destructure from req.user
 
+        // Check if text exists
         if (!text) {
             return res.status(400).json({error: "Text field is required"});
         }
 
+        // Ensure necessary user info is available
+        if (!userId || !username || !profilePic) {
+            return res.status(400).json({error: "User information is incomplete"});
+        }
+
+        // Find the post by ID
         const post = await Post.findById(postId);
         if (!post) {
             return res.status(404).json({error: "Post not found"});
         }
 
-        const reply = {userId, text, userProfilePic, username};
+        // Create the reply object
+        const reply = {
+            userId,
+            text,
+            userProfilePic: profilePic,
+            username,
+        };
 
+        // Push the new reply to the post's replies array
         post.replies.push(reply);
         await post.save();
 
-        res.status(200).json(reply);
+        // Return the updated post with the new reply
+        res.status(200).json({post, reply}); // You can include more information here if needed
     } catch (err) {
+        console.error(err); // Log the error for debugging purposes
         res.status(500).json({error: err.message});
     }
 };
+
 const getFeedPosts = async (req, res) => {
     try {
         const userId = req.user._id;
@@ -157,34 +174,6 @@ const getUserPosts = async (req, res) => {
         res.status(200).json(posts);
     } catch (error) {
         res.status(500).json({error: error.message});
-    }
-};
-
-export const deleteReplyFromPost = async (req, res) => {
-    const {postId, replyId} = req.params;
-    const userId = req.user._id;
-
-    try {
-        const post = await Post.findById(postId);
-        if (!post) return res.status(404).json({error: "Post not found"});
-
-        // Check if the reply exists
-        const reply = post.replies.id(replyId);
-        if (!reply) return res.status(404).json({error: "Reply not found"});
-
-        // Only the reply author or the post owner can delete
-        if (reply.userId.toString() !== userId.toString() && post.postedBy.toString() !== userId.toString()) {
-            return res.status(403).json({error: "Unauthorized to delete this reply"});
-        }
-
-        // Remove the reply
-        reply.remove();
-        await post.save();
-
-        res.status(200).json({message: "Reply deleted successfully"});
-    } catch (error) {
-        console.error("Error deleting reply:", error);
-        res.status(500).json({error: "Server error while deleting reply"});
     }
 };
 

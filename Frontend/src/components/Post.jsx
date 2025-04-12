@@ -10,7 +10,6 @@ import {DeleteIcon} from "@chakra-ui/icons";
 import {useRecoilState, useRecoilValue} from "recoil";
 import userAtom from "../atoms/userAtom";
 import postsAtom from "../atoms/postsAtom";
-import Comment from "./Comment";
 
 const Post = ({post, postedBy}) => {
     const [user, setUser] = useState(null);
@@ -18,6 +17,12 @@ const Post = ({post, postedBy}) => {
     const currentUser = useRecoilValue(userAtom);
     const [posts, setPosts] = useRecoilState(postsAtom);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!currentUser) {
+            navigate("/auth");
+        }
+    }, [currentUser, navigate]);
 
     useEffect(() => {
         const getUser = async () => {
@@ -147,15 +152,6 @@ const Post = ({post, postedBy}) => {
                         <Actions post={post} />
                     </Flex>
                 </Flex>
-                {post.replies.map((reply, i) => (
-                    <Comment
-                        key={reply._id}
-                        reply={reply}
-                        lastReply={i === post.replies.length - 1}
-                        postOwnerId={post.postedBy}
-                        postId={post._id} // ✅ IMPORTANT!
-                    />
-                ))}
             </Flex>
         </Link>
     );

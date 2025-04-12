@@ -1,12 +1,13 @@
 import {useEffect, useState} from "react";
 import UserHeader from "../components/UserHeader";
-import {useParams} from "react-router-dom";
+import {useParams, useNavigate} from "react-router-dom"; // 💡 added useNavigate
 import {Spinner, Flex} from "@chakra-ui/react";
 import useShowToast from "../hooks/useShowToast";
 import Post from "../components/Post";
 import useGetUserProfile from "../hooks/useGetUserProfile";
-import {useRecoilState} from "recoil";
+import {useRecoilState, useRecoilValue} from "recoil"; // 💡 added useRecoilValue
 import postsAtom from "../atoms/postsAtom";
+import userAtom from "../atoms/userAtom"; // 💡 imported userAtom
 
 const UserPage = () => {
     const {user, loading} = useGetUserProfile();
@@ -14,6 +15,15 @@ const UserPage = () => {
     const showToast = useShowToast();
     const [posts, setPosts] = useRecoilState(postsAtom);
     const [fetchingPosts, setFetchingPosts] = useState(true);
+    const currentUser = useRecoilValue(userAtom); // 💡 get current logged in user
+    const navigate = useNavigate();
+
+    // 💡 Redirect if user is logged out
+    useEffect(() => {
+        if (!currentUser) {
+            navigate("/auth");
+        }
+    }, [currentUser, navigate]);
 
     useEffect(() => {
         const getPosts = async () => {
@@ -48,14 +58,12 @@ const UserPage = () => {
     return (
         <>
             <UserHeader user={user} />
-
-            {!fetchingPosts && posts.length === 0 && <h1>User has not posts.</h1>}
+            {!fetchingPosts && posts.length === 0 && <h1>User has no posts.</h1>}
             {fetchingPosts && (
                 <Flex justifyContent={"center"} my={12}>
                     <Spinner size={"xl"} />
                 </Flex>
             )}
-
             {posts.map((post) => (
                 <Post key={post._id} post={post} postedBy={post.postedBy} />
             ))}

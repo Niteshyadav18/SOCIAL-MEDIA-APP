@@ -22,8 +22,7 @@ import postsAtom from "../atoms/postsAtom";
 
 const Actions = ({post}) => {
     const user = useRecoilValue(userAtom);
-    const [liked, setLiked] = useState(post?.likes?.includes(user?._id) || false);
-
+    const [liked, setLiked] = useState(post.likes.includes(user?._id));
     const [posts, setPosts] = useRecoilState(postsAtom);
     const [isLiking, setIsLiking] = useState(false);
     const [isReplying, setIsReplying] = useState(false);
@@ -32,47 +31,6 @@ const Actions = ({post}) => {
     const showToast = useShowToast();
     const {isOpen, onOpen, onClose} = useDisclosure();
 
-    // const handleLikeAndUnlike = async () => {
-    //     if (!user) return showToast("Error", "You must be logged in to like a post", "error");
-    //     if (isLiking) return;
-    //     setIsLiking(true);
-    //     try {
-    //         const res = await fetch("/api/posts/like/" + post._id, {
-    //             method: "PUT",
-    //             headers: {
-    //                 "Content-Type": "application/json",
-    //             },
-    //         });
-    //         const data = await res.json();
-    //         if (data.error) return showToast("Error", data.error, "error");
-
-    //         if (!liked) {
-    //             // add the id of the current user to post.likes array
-    //             const updatedPosts = posts.map((p) => {
-    //                 if (p._id === post._id) {
-    //                     return {...p, likes: [...p.likes, user._id]};
-    //                 }
-    //                 return p;
-    //             });
-    //             setPosts(updatedPosts);
-    //         } else {
-    //             // remove the id of the current user from post.likes array
-    //             const updatedPosts = posts.map((p) => {
-    //                 if (p._id === post._id) {
-    //                     return {...p, likes: p.likes.filter((id) => id !== user._id)};
-    //                 }
-    //                 return p;
-    //             });
-    //             setPosts(updatedPosts);
-    //         }
-
-    //         setLiked(!liked);
-    //     } catch (error) {
-    //         showToast("Error", error.message, "error");
-    //     } finally {
-    //         setIsLiking(false);
-    //     }
-    // };
     const handleLikeAndUnlike = async () => {
         if (!user) return showToast("Error", "You must be logged in to like a post", "error");
         if (isLiking) return;
@@ -115,37 +73,6 @@ const Actions = ({post}) => {
         }
     };
 
-    // const handleReply = async () => {
-    //     if (!user) return showToast("Error", "You must be logged in to reply to a post", "error");
-    //     if (isReplying) return;
-    //     setIsReplying(true);
-    //     try {
-    //         const res = await fetch("/api/posts/reply/" + post._id, {
-    //             method: "PUT",
-    //             headers: {
-    //                 "Content-Type": "application/json",
-    //             },
-    //             body: JSON.stringify({text: reply}),
-    //         });
-    //         const data = await res.json();
-    //         if (data.error) return showToast("Error", data.error, "error");
-
-    //         const updatedPosts = posts.map((p) => {
-    //             if (p._id === post._id) {
-    //                 return {...p, replies: [...p.replies, data]};
-    //             }
-    //             return p;
-    //         });
-    //         setPosts(updatedPosts);
-    //         showToast("Success", "Reply posted successfully", "success");
-    //         onClose();
-    //         setReply("");
-    //     } catch (error) {
-    //         showToast("Error", error.message, "error");
-    //     } finally {
-    //         setIsReplying(false);
-    //     }
-    // };
     const handleReply = async () => {
         if (!user) return showToast("Error", "You must be logged in to reply to a post", "error");
         if (isReplying) return;
@@ -177,6 +104,7 @@ const Actions = ({post}) => {
             setIsReplying(false);
         }
     };
+
     return (
         <Flex flexDirection="column">
             <Flex gap={3} my={2} onClick={(e) => e.preventDefault()}>
@@ -223,11 +151,11 @@ const Actions = ({post}) => {
 
             <Flex gap={2} alignItems={"center"}>
                 <Text color={"gray.light"} fontSize="sm">
-                    <p>{post?.likes?.length || 0} Likes</p>
+                    {post.replies.length} replies
                 </Text>
                 <Box w={0.5} h={0.5} borderRadius={"full"} bg={"gray.light"}></Box>
                 <Text color={"gray.light"} fontSize="sm">
-                    <p>{post?.likes?.length || 0} reply</p>
+                    {post.likes.length} likes
                 </Text>
             </Flex>
 

@@ -10,14 +10,22 @@ import {
     Avatar,
     Center,
 } from "@chakra-ui/react";
-import {useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {useRecoilState} from "recoil";
 import userAtom from "../atoms/userAtom";
 import usePreviewImg from "../hooks/usePreviewImg";
 import useShowToast from "../hooks/useShowToast";
+import {useNavigate} from "react-router-dom";
 
 export default function UpdateProfilePage() {
     const [user, setUser] = useRecoilState(userAtom);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!user) {
+            navigate("/auth");
+        }
+    }, [user, navigate]);
     const [inputs, setInputs] = useState({
         name: user?.name || "",
         username: user?.username || "",
@@ -123,7 +131,7 @@ export default function UpdateProfilePage() {
                             type="text"
                         />
                     </FormControl>
-                    <FormControl>
+                    {/* <FormControl>
                         <FormLabel>Password</FormLabel>
                         <Input
                             placeholder="New password"
@@ -131,7 +139,7 @@ export default function UpdateProfilePage() {
                             onChange={(e) => setInputs({...inputs, password: e.target.value})}
                             type="password"
                         />
-                    </FormControl>
+                    </FormControl> */}
                     <Stack spacing={6} direction={["column", "row"]}>
                         <Button bg={"red.400"} color={"white"} w="full" _hover={{bg: "red.500"}}>
                             Cancel

@@ -86,9 +86,6 @@ const UserHeader = ({user}) => {
                 </Flex>
                 <Flex>
                     <Box className="icon-container">
-                        <BsInstagram size={24} cursor={"pointer"} />
-                    </Box>
-                    <Box className="icon-container">
                         <Menu>
                             <MenuButton>
                                 <CgMoreO size={24} cursor={"pointer"} />

@@ -1,5 +1,5 @@
 import express from "express";
-import {createPost, deleteReplyFromPost} from "../controllers/postController.js";
+import {createPost} from "../controllers/postController.js";
 import {getPost} from "../controllers/postController.js";
 import {getUserPosts} from "../controllers/postController.js";
 import {deletePost} from "../controllers/postController.js";
@@ -17,6 +17,5 @@ router.post("/create", protectRoute, createPost);
 router.delete("/:id", protectRoute, deletePost);
 router.put("/like/:id", protectRoute, likedUnlikedPost);
 router.put("/reply/:id", protectRoute, replyToPost);
-router.delete("/posts/:postId/replies/:replyId", protectRoute, deleteReplyFromPost);
 
 export default router;
