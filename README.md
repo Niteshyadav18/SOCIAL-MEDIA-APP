@@ -1,5 +1,5 @@
 # Nitzit 🌐  
-A modern social media web application built to connect people, share moments, and foster meaningful interactions.
+A modern social media web application built to connect people, share moments.
 
 ## 🚀 Features
 
