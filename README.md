@@ -79,5 +79,5 @@ I would like to thank all the open-source projects and contributors whose tools 
 ## 📬 Contact
 
 **Nitesh Yadav**  
-Email: your-email@example.com  
+Email: niteshprakashyadav18@gmail.com  
 LinkedIn: [Nitesh Yadav](https://www.linkedin.com/in/nitesh-yadav-00392823a/)
