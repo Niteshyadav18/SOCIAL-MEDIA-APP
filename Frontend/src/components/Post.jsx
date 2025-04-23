@@ -19,12 +19,6 @@ const Post = ({post, postedBy}) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!currentUser) {
-            navigate("/auth");
-        }
-    }, [currentUser, navigate]);
-
-    useEffect(() => {
         const getUser = async () => {
             try {
                 const res = await fetch("/api/users/profile/" + postedBy);

@@ -161,6 +161,7 @@ const getFeedPosts = async (req, res) => {
         res.status(500).json({error: err.message});
     }
 };
+
 const getUserPosts = async (req, res) => {
     const {username} = req.params;
     try {

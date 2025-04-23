@@ -9,7 +9,6 @@ import {getFeedPosts} from "../controllers/postController.js";
 import protectRoute from "../middlewares/protectRoutes.js";
 
 const router = express.Router();
-
 router.get("/feed", protectRoute, getFeedPosts);
 router.get("/:id", getPost);
 router.get("/user/:username", getUserPosts);
