@@ -7,6 +7,7 @@ A modern social media web application built to connect people, share moments.
 - Create, Edit, and Delete Posts
 - Like and Comment on Posts
 - Follow / Unfollow Users
+- Suggest Users (Non-followers)
 - Real-time Notifications
 - Responsive and Mobile-Friendly UI
 - Secure Backend with Token-based Authentication
