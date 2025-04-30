@@ -16,7 +16,7 @@ A modern social media web application built to connect people, share moments.
 
 **Frontend:**
 - React.js
-- Tailwind CSS / CSS
+- Chakra UI  / CSS
 - Axios
 
 **Backend:**
